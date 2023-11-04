@@ -1,6 +1,13 @@
 'use client'
 import { IconType } from 'react-icons'
-import { AiOutlineHome, AiOutlineAppstore, AiOutlineUser, AiOutlineBell, AiOutlineArrowLeft } from 'react-icons/ai'
+import {
+  AiOutlineHome,
+  AiOutlineRocket,
+  AiOutlineAppstore,
+  AiOutlineUser,
+  AiOutlineBell,
+  AiOutlineArrowLeft,
+} from 'react-icons/ai'
 import { useRouter, usePathname } from 'next/navigation'
 
 interface INavigationBar {
@@ -10,28 +17,15 @@ interface INavigationBar {
 const webTitle = 'Treasure Words'
 const navigationItems = [
   { name: 'Home', icon: AiOutlineHome, path: '/' },
+  { name: 'Learn & Play', icon: AiOutlineRocket, path: '/learnplay' },
   { name: 'Categories', icon: AiOutlineAppstore, path: '/categories' },
   { name: 'Profile', icon: AiOutlineUser, path: '/profile' },
 ]
 
-const getPageTitle = (path: string) => {
-  switch (path) {
-    case '/':
-      return webTitle
-    default:
-      if (path.startsWith('/')) {
-        const title = path.slice(1)
-        return title.charAt(0).toUpperCase() + title.slice(1)
-      }
-      return 'Page Title'
-  }
-}
-
 export default function NavigationBar({ children }: INavigationBar) {
   const router = useRouter()
   const currentPage = usePathname()
-  const pageTitle = getPageTitle(currentPage)
-
+  const pageTitle = navigationItems.find((x) => x.path === currentPage)?.name
   return (
     <>
       <div className='fixed left-0 right-0 top-0 bg-white shadow-md'>
@@ -74,7 +68,7 @@ export default function NavigationBar({ children }: INavigationBar) {
             <li
               key={name}
               onClick={() => router.push(path)}
-              className={`flex cursor-pointer flex-col items-center ${
+              className={`flex flex-auto cursor-pointer flex-col items-center ${
                 currentPage === path ? 'text-blue-500' : 'text-gray-500'
               }`}
             >
