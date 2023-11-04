@@ -16,7 +16,6 @@ import useUserLogin from '@/hooks/useUserLogin'
 
 export default function Profile() {
   const { currentUser } = useUserLogin()
-  debugger
   return (
     <main className='max-w-7xl self-center px-4 py-16'>
       <div className='flex flex-col items-center'>

@@ -22,9 +22,7 @@ export default function LayoutProvider({ children, currentUser }: ILayoutProvide
 
   useEffect(() => {
     // session
-    // debugger
     setCurrentUser(currentUser as SafeUser)
-    debugger
   }, [])
 
   useEffect(() => {
