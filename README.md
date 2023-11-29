@@ -19,3 +19,10 @@ npx prisma db push
 #run the development server
 yarn dev
 ```
+
+## Update Latest Version Package
+using npx (so you don't have to install a global package)
+```bash
+npx npm-check-updates -u
+yarn install
+```
