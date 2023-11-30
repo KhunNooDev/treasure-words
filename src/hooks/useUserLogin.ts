@@ -2,7 +2,7 @@ import { SafeUser } from '@/types'
 import { create } from 'zustand'
 
 interface UserLoginStore {
-  currentUser?: SafeUser | null
+  currentUser: SafeUser
   setCurrentUser: (data: SafeUser) => void
 }
 

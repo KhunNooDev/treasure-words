@@ -4,7 +4,6 @@ import { Inter } from 'next/font/google'
 
 import AuthProvider from '@/context/AuthProvider'
 import LayoutProvider from '@/context/LayoutProvider'
-import getCurrentUser from '@/actions/getCurrentUser'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,12 +13,11 @@ export const metadata: Metadata = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const currentUser = await getCurrentUser()
   return (
     <html lang='en'>
-      <body className={inter.className}>
+      <body className={inter.className} suppressHydrationWarning={true}>
         <AuthProvider>
-          <LayoutProvider currentUser={currentUser}>{children}</LayoutProvider>
+          <LayoutProvider>{children}</LayoutProvider>
         </AuthProvider>
       </body>
     </html>
