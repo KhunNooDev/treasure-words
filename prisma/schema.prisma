@@ -75,3 +75,17 @@ model Reservation {
   User    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   Listing Listing? @relation(fields: [listingId], references: [id], onDelete: Cascade)
 }
+
+model Word {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  word           String
+  partsOfSpeech  String
+  meaning        String[]
+  example        String
+  synonyms       String[]
+  antonyms       String[]
+  image          String
+  categories     String[]
+  level          String
+  phonetics      String
+}
