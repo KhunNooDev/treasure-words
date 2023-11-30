@@ -19,7 +19,10 @@ npx prisma db push
 #run the development server
 yarn dev
 ```
-
+When updated file `schema.prisma`
+```bash
+npx prisma generate
+```
 ## Update Latest Version Package
 using npx (so you don't have to install a global package)
 ```bash
