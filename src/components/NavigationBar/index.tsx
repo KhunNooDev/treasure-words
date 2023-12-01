@@ -17,6 +17,7 @@ interface INavigationBar {
 const webTitle = 'Treasure Words'
 const navigationItems = [
   { name: 'Home', icon: AiOutlineHome, path: '/' },
+  { name: 'Words', icon: AiOutlineRocket, path: '/words' },
   { name: 'Learn & Play', icon: AiOutlineRocket, path: '/learnplay' },
   { name: 'Categories', icon: AiOutlineAppstore, path: '/categories' },
   { name: 'Profile', icon: AiOutlineUser, path: '/profile' },

@@ -2,6 +2,8 @@ import axios, { AxiosResponse, AxiosError } from "axios";
 import { NextRequest, NextResponse } from 'next/server'
 
 const apiBaseUrl = 'api'; // Update this to match your API base URL
+type dataApi<T> = { success: boolean, data: T, error: string };
+// type resApi<T> = Promise<dataApi<T>>;
 interface ApiUtils {
   getParams(req: NextRequest): Promise<{ [key: string]: string | number | null }>;
   getData: <T>(endpoint: string, params?: Record<string, any>) => Promise<T>;
@@ -34,8 +36,12 @@ export const apiUtils: ApiUtils = {
           params: params,
         })
         .then((res: AxiosResponse<T>) => {
-          const responseData = res.data;
-          resolve(responseData);
+          const responseData = res.data as dataApi<T>;
+          if(responseData.success){
+            resolve(responseData.data);
+          }else{
+            reject(responseData.error);
+          }
         })
         .catch((err: AxiosError) => {
           reject(err);

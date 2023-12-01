@@ -1,6 +1,4 @@
 'use client'
-
-import { apiUtils } from '@/utils/apiUtils';
 import Link from 'next/link' // Import Link from Next.js for routing
 
 const games = [
@@ -15,26 +13,7 @@ const games = [
     image: 'game2-image.jpg',
   },
 ]
-const wordData = {
-  word: 'example',
-  partsOfSpeech: 'noun',
-  meaning: ['a representative form or pattern'],
-  example: 'This is an example sentence.',
-  synonyms: ['sample', 'model', 'prototype'],
-  antonyms: ['counterexample', 'opposite'],
-  image: 'example_image.jpg',
-  categories: ['general', 'common'],
-  level: 'intermediate',
-  phonetics: '/ɪɡˈzæmpəl/',
-};
 export default function LearnPlay() {
-  const insertData = () => {
-    apiUtils.postData('words', {
-      wordData:wordData
-    }).then((data) => {
-      debugger;
-    })
-  }
   return (
     <main className='container mx-auto pt-16'>
       <h1 className='text-4xl font-bold'>LearnPlay</h1>
@@ -51,7 +30,6 @@ export default function LearnPlay() {
           </Link>
         ))}
       </div>
-      <button onClick={() => insertData()}>test insert data</button>
     </main>
   )
 }
