@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt'
 
 import prisma from '@/libs/prismadb'
 
-export const options: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GithubProvider({
@@ -19,7 +19,7 @@ export const options: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
     CredentialsProvider({
-      name: 'credentials',
+      name: 'Sign in',
       credentials: {
         email: { label: 'email', type: 'text' },
         password: { label: 'password', type: 'password' },
@@ -49,8 +49,33 @@ export const options: NextAuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    session: ({ session, token }) => {
+      // console.log("Session Callback", { session, token });
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id,
+          // randomKey: token.randomKey, -> other
+        },
+      };
+    },
+    jwt: ({ token, user }) => {
+      // console.log("JWT Callback", { token, user });
+      if (user) {
+        const u = user as unknown as any;
+        return {
+          ...token,
+          id: u.id,
+          // randomKey: u.randomKey, -> other
+        };
+      }
+      return token;
+    },
+  },
   pages: {
-    signIn: '/',
+    signIn: '/login',
   },
   debug: process.env.NODE_ENV === 'development',
   session: {

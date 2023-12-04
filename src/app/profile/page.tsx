@@ -9,20 +9,21 @@ import {
   AiOutlineDelete,
   AiFillEdit,
 } from 'react-icons/ai'
+import { useSession } from "next-auth/react";
 
 import Avatar from '@/components/Avatar'
 import LogoutButton from '@/components/LogoutButton'
-import useUserLogin from '@/hooks/useUserLogin'
 
 export default function Profile() {
-  const { currentUser } = useUserLogin()
+  const { data: session } = useSession();
+
   return (
     <main className='max-w-7xl self-center px-4 py-16'>
       <div className='flex flex-col items-center'>
         <div className='mb-2'>
-          <Avatar src={currentUser?.image} width={80} height={80} />
+          <Avatar src={session?.user?.image} width={80} height={80} />
         </div>
-        <h1 className='text-2xl font-bold'> {currentUser?.name || 'John Doe'}</h1>
+        <h1 className='text-2xl font-bold'> {session?.user?.name || 'John Doe'}</h1>
         <p className='text-gray-500'>Rank: Diamond (1850)</p>
         <button className='mt-2 flex items-center text-blue-500'>
           <AiFillEdit className='mr-1 text-lg' />
