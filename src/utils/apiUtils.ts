@@ -1,14 +1,15 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { NextRequest, NextResponse } from 'next/server'
+import useSWR from "swr";
 
 const apiBaseUrl = 'api'; // Update this to match your API base URL
-type dataApi<T> = { success: boolean, data: T, error: string };
-// type resApi<T> = Promise<dataApi<T>>;
+
 interface ApiUtils {
   getParams(req: NextRequest): Promise<{ [key: string]: string | number | null }>;
   getData: <T>(endpoint: string, params?: Record<string, any>) => Promise<T>;
   postData: <T>(endpoint: string, params?: Record<string, any>) => Promise<T>;
 }
+type dataApi<T> = { success: boolean, data: T, error: string };
 
 export const apiUtils: ApiUtils = {
   getParams: async (req: NextRequest) => {
@@ -63,4 +64,14 @@ export const apiUtils: ApiUtils = {
         });
     });
   },
+};
+
+export const useAxiosSWR = <T>(endpoint: string): { data: T; error: AxiosError<unknown, any> | null; isLoading: boolean } => {
+  const { data, error, isValidating } = useSWR<T>(endpoint, apiUtils.getData);
+
+  return {
+    data: data as T, // Type assertion here
+    error,
+    isLoading: isValidating,
+  };
 };

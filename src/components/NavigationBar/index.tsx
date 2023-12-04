@@ -33,7 +33,7 @@ export default function NavigationBar({ children }: INavigationBar) {
         <div className='flex items-center justify-between px-4 py-2 md:hidden'>
           {/* Back Icon to Home Page */}
           {currentPage !== '/' && (
-            <button onClick={() => router.push('/')} className='flex items-center text-blue-500 focus:outline-none'>
+            <button onClick={() => router.back()} className='flex items-center text-blue-500 focus:outline-none'>
               <AiOutlineArrowLeft className='text-xl' />
             </button>
           )}
