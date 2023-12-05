@@ -1,6 +1,5 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { NextRequest, NextResponse } from 'next/server'
-import useSWR from "swr";
 
 const apiBaseUrl = 'api'; // Update this to match your API base URL
 
@@ -64,14 +63,4 @@ export const apiUtils: ApiUtils = {
         });
     });
   },
-};
-
-export const useAxiosSWR = <T>(endpoint: string): { data: T; error: AxiosError<unknown, any> | null; isLoading: boolean } => {
-  const { data, error, isValidating } = useSWR<T>(endpoint, apiUtils.getData);
-
-  return {
-    data: data as T, // Type assertion here
-    error,
-    isLoading: isValidating,
-  };
 };

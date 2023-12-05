@@ -4,8 +4,8 @@ import { HiChevronDown} from 'react-icons/hi'
 import Link from 'next/link';
 import Image from 'next/image';
 
-import { apiUtils, useAxiosSWR } from '@/utils/apiUtils';
 import { WordData } from '@/types/word.type';
+import { useAxiosSWR } from '@/utils/useAxiosSWR';
 
 export default function Words() {
   const { data:dataList, error, isLoading } = useAxiosSWR<WordData[]>('words');
