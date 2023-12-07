@@ -1,5 +1,5 @@
-import React, { ChangeEvent, useRef, useState } from 'react';
-import { SubmitHandler, FieldValues, useForm, useFormContext, FormProvider } from 'react-hook-form';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { SubmitHandler, FieldValues, useForm, useFormContext, FormProvider, useWatch, RegisterOptions } from 'react-hook-form';
 import { FaFileImage, FaTimesCircle } from 'react-icons/fa';
 import Image from 'next/image';
 
@@ -47,7 +47,7 @@ export function FormInput({
   };
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)} className='mx-auto max-w-md'>
+      <form noValidate onSubmit={methods.handleSubmit(onSubmit)} className='mx-auto max-w-md'>
         {children}
         <div className="flex justify-center space-x-2 mt-4">
           <button type='submit' className='btn btn-primary'>
@@ -164,40 +164,31 @@ export function IDropdown({ id, label, options, w, required, disable }: Dropdown
   );
 }
 
-
 export function IFileImage({ id, label, required, disable }: InputProps) {
+  const { setValue } = useFormContext();
+  const fileInputValue = useWatch({ name: id });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (file) {
-      // Validate that the uploaded file is an image
-      if (file.type.startsWith('image/')) {
-        // Read the image file and set the preview
-        const reader = new FileReader();
-        reader.onload = () => {
-          setImagePreview(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        // Reset the preview and show an error
-        setImagePreview(null);
-        event.target.value = ''; // Clear the input value
-        alert('Please upload a valid image file.');
-      }
-    } else {
-      // Reset the preview if no file is selected
+  useEffect(() => {
+    if(!fileInputValue){
       setImagePreview(null);
+    }
+  }, [fileInputValue])
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      const imageUrl = URL.createObjectURL(file);
+      setImagePreview(imageUrl);
+      setValue(id, file);
+    } else {
+      setImagePreview(null);
+      setValue(id, null); // Clear the file value in case of an invalid file
     }
   };
 
   const handleImageClick = () => {
-    // Trigger the file input click event
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    fileInputRef.current?.click();
   };
 
   const handleRemoveImage = () => {
@@ -207,6 +198,7 @@ export function IFileImage({ id, label, required, disable }: InputProps) {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+    setValue(id, null);
   };
 
   return (
@@ -219,8 +211,8 @@ export function IFileImage({ id, label, required, disable }: InputProps) {
                 <Image
                   src={imagePreview}
                   alt="Preview"
-                  width={100} // Adjust the width according to your requirements
-                  height={100} // Adjust the height according to your requirements
+                  width={100}
+                  height={100}
                 />
                 <button
                   onClick={handleRemoveImage}
@@ -235,6 +227,7 @@ export function IFileImage({ id, label, required, disable }: InputProps) {
                 className="flex items-center justify-center text-gray-500 h-full"
               >
                 <FaFileImage size={20} />
+                {required && <span className='text-red-500'> * </span>}
               </div>
             )}
           </div>
@@ -242,13 +235,17 @@ export function IFileImage({ id, label, required, disable }: InputProps) {
       </div>
       <input
         type="file"
+        accept="image/*"
         id={id}
         ref={fileInputRef}
         onChange={handleFileChange}
         className="hidden"
         disabled={disable}
+        required={required}
       />
+      {/* {required && !fileInputValue && (
+        <p className="text-red-500">This field is required</p>
+      )} */}
     </div>
   );
-  
 }
