@@ -24,7 +24,7 @@ export default function LearnPlay() {
             <div className='mb-2'>
               <img src={game.image} alt={game.name} className='h-auto w-full' />
             </div>
-            <div className='absolute bottom-0 left-0 w-full bg-white bg-opacity-80 text-blue-500 opacity-0 transition-opacity hover:opacity-100'>
+            <div className='absolute bottom-0 left-0 w-full bg-neutral bg-opacity-80 text-blue-500 opacity-0 transition-opacity hover:opacity-100'>
               {game.name}
             </div>
           </Link>

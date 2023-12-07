@@ -10,12 +10,17 @@ import {
   AiFillEdit,
 } from 'react-icons/ai'
 import { useSession } from "next-auth/react";
+import { useTheme } from 'next-themes'
 
 import Avatar from '@/components/Avatar'
 import LogoutButton from '@/components/LogoutButton'
 
 export default function Profile() {
   const { data: session } = useSession();
+  const { theme, setTheme } = useTheme()
+  const isSystemTheme = theme === 'system';
+  const isLightTheme = theme === 'light';
+  const isDarkTheme = theme === 'dark';
 
   return (
     <main className='max-w-7xl self-center px-4 py-16'>
@@ -37,9 +42,16 @@ export default function Profile() {
             <AiOutlineLock className='mr-2' />
             Change Password
           </li>
-          <li className='flex items-center'>
-            <AiOutlineBgColors className='mr-2' />
-            Theme
+          <li className='flex items-center justify-between'>
+            <div className='flex items-center'>
+              <AiOutlineBgColors className='mr-2' />
+              Theme
+            </div>
+            <div className='flex gap-2 mx-2'>
+              <button className={`${isSystemTheme ? 'text-info' : ''}`} onClick={() => setTheme('system')}>System</button>
+              <button className={`${isLightTheme ? 'text-info' : ''}`} onClick={() => setTheme('light')}>Light</button>
+              <button className={`${isDarkTheme ? 'text-info' : ''}`} onClick={() => setTheme('dark')}>Dark</button>
+            </div>
           </li>
           <li className='flex items-center'>
             <AiOutlineGlobal className='mr-2' />

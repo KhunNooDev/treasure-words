@@ -1,4 +1,5 @@
 'use client'
+import { ThemeProvider } from 'next-themes'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 
@@ -15,7 +16,7 @@ export default function LayoutProvider({ children }: ILayoutProvider) {
   const { data: session, status } = useSession()
 
   return (
-    <>
+    <ThemeProvider>
       {status === 'loading' ? null : protectedPages.includes(pathname) ? (
         // Render the children wrapped with NavigationBar for pages that require authentication
         <>{children}</>
@@ -23,6 +24,6 @@ export default function LayoutProvider({ children }: ILayoutProvider) {
         // Render the children directly for login and register pages
         <NavigationBar>{children}</NavigationBar>
       )}
-    </>
+    </ThemeProvider>
   )
 }

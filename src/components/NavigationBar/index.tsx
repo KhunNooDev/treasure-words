@@ -29,7 +29,7 @@ export default function NavigationBar({ children }: INavigationBar) {
   const pageTitle = navigationItems.find((x) => x.path === currentPage)?.name
   return (
     <>
-      <div className='fixed left-0 right-0 top-0 bg-white shadow-md'>
+      <div className='fixed left-0 right-0 top-0 bg-neutral shadow-md z-[99]'>
         <div className='flex items-center justify-between px-4 py-2 md:hidden'>
           {/* Back Icon to Home Page */}
           {currentPage !== '/' && (
@@ -63,7 +63,7 @@ export default function NavigationBar({ children }: INavigationBar) {
       {/* Children Content */}
       {children}
 
-      <nav className='fixed bottom-0 left-0 right-0 bg-white shadow-md md:hidden'>
+      <nav className='fixed bottom-0 left-0 right-0 bg-neutral shadow-md md:hidden z-[99]'>
         <ul className='flex justify-around py-2'>
           {navigationItems.map(({ name, icon: Icon, path }) => (
             <li
