@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { SubmitHandler, FieldValues, useForm, useFormContext, FormProvider, useWatch, RegisterOptions } from 'react-hook-form';
 import { FaFileImage, FaTimesCircle } from 'react-icons/fa';
-import Image from 'next/image';
+import Image from '@/components/Image';
 
 interface FormInputProps {
   children: React.ReactNode;
@@ -25,6 +25,8 @@ interface InputProps {
 interface DropdownProps extends InputProps {
   options: Array<{ value: string; label: string }>;
 } 
+interface IFileImageProps extends Omit<InputProps, 'label'> {}
+
 export function FormInput({ 
   children, onSubmit, onReset, onCancel,
   submitLabel = 'Submit',
@@ -164,17 +166,60 @@ export function IDropdown({ id, label, options, w, required, disable }: Dropdown
   );
 }
 
-export function IFileImage({ id, label, required, disable }: InputProps) {
-  const { setValue } = useFormContext();
+export function MultiAddInput({ id, label, w, placeholder, required, disable }: InputProps) {
+  const { register, formState: { errors } } = useFormContext();
+  const [additionalInputs, setAdditionalInputs] = useState<string[]>([]);
+  const errorClass = errors[id] ? 'border-red-500 focus:border-red-500' : 'border';
+  const widthPercentage = w ? `${(w / 12) * 100}%` : '100%';
+
+  const handleAddInput = () => {
+    setAdditionalInputs([...additionalInputs, '']); // Add an empty string for a new input
+  };
+
+  return (
+    <div className="form-control w-full">
+      <label className="label">
+        <span className="label-text">
+          {label}
+          {required && <span className='text-red-500'> * </span>}
+        </span>
+      </label>
+
+      {additionalInputs.map((input, index) => (
+        <IText key={index} id={`${id}_${index}`} label={`Additional ${label}`} />
+      ))}
+
+      <button type="button" className="btn btn-primary mr-2" onClick={handleAddInput}>
+        Add
+      </button>
+
+      {errors[id] && (
+        <label className="label">
+          <span className="label-text-alt text-red-500">
+            {errors[id]?.message?.toString() || `${label} is required`}
+          </span>
+        </label>
+      )}
+    </div>
+  );
+}
+
+export function IFileImage({ id, required, disable }: IFileImageProps) {
+  const { register, setValue } = useFormContext();
   const fileInputValue = useWatch({ name: id });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    register(id, { required });
+  }, [id, register, required, fileInputValue]);
 
   useEffect(() => {
     if(!fileInputValue){
       setImagePreview(null);
     }
   }, [fileInputValue])
+  
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type.startsWith('image/')) {
@@ -241,11 +286,11 @@ export function IFileImage({ id, label, required, disable }: InputProps) {
         onChange={handleFileChange}
         className="hidden"
         disabled={disable}
-        required={required}
+        // required={required}
       />
-      {/* {required && !fileInputValue && (
+      {required && !fileInputValue && (
         <p className="text-red-500">This field is required</p>
-      )} */}
+      )}
     </div>
   );
 }

@@ -2,14 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { HiChevronDown} from 'react-icons/hi'
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/components/Image';
 
 import { WordData } from '@/types/word.type';
 import { useAxiosSWR } from '@/utils/useAxiosSWR';
 
 export default function Words() {
   const { data:dataList, error, isLoading } = useAxiosSWR<WordData[]>('words');
-
+// if(dataList) debugger;
   return (
     <main className="container mx-auto pt-16">
       <Link href='/words/new' className='btn btn-primary mx-4'>New Word</Link>
@@ -23,7 +23,7 @@ export default function Words() {
             <div key={word.word} className='flex items-center justify-between p-2 gap-2'>
               <div className='flex items-center gap-2'>
                 <Image 
-                  src='/images/placeholder.jpg' //{word.image}
+                  src={word.dataUrl || '/images/placeholder.jpg'}
                   alt={word.word}
                   width={64}
                   height={64}

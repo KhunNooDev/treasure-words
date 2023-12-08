@@ -1,18 +1,21 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { NextRequest, NextResponse } from 'next/server'
+import { dataUtils } from "./dataUtils";
 
-const apiBaseUrl = 'api'; // Update this to match your API base URL
+const apiBaseUrl = '/api'; // Update this to match your API base URL
+
+type dataApi<T> = { success: boolean, data: T, error: string };
+type paramsTypes = { [key: string]: string | number | Blob | null }
 
 interface ApiUtils {
-  getParams(req: NextRequest): Promise<{ [key: string]: string | number | null }>;
+  getParams(req: NextRequest): Promise<paramsTypes>;
   getData: <T>(endpoint: string, params?: Record<string, any>) => Promise<T>;
   postData: <T>(endpoint: string, params?: Record<string, any>) => Promise<T>;
 }
-type dataApi<T> = { success: boolean, data: T, error: string };
 
 export const apiUtils: ApiUtils = {
   getParams: async (req: NextRequest) => {
-    let queryParams: { [key: string]: string | number | null } = {};
+    let queryParams: paramsTypes = {};
 
     if (req.method === 'GET') {
       const { searchParams } = new URL(req.url);
@@ -21,10 +24,15 @@ export const apiUtils: ApiUtils = {
         queryParams[key] = /^\d+$/.test(value) ? parseInt(value, 10) : value;
       });
     } else if (req.method === 'POST') {
-      const data = await req.json();
-      queryParams = data;
+      const contentType = req.headers.get('content-type');
+      if(contentType && contentType.includes('multipart/form-data')){
+        const formData = await req.formData()
+        queryParams = formDataToObject(formData);        
+      }else{
+        const data = await req.json();
+        queryParams = data;
+      }
     }
-
     return queryParams;
   },
   getData: <T>(endpoint: string, params = {}): Promise<T> => {
@@ -50,10 +58,12 @@ export const apiUtils: ApiUtils = {
   },
   postData: <T>(endpoint: string, data: any): Promise<T> => {
     const url = `${apiBaseUrl}/${endpoint}`;
+    const isFormData = data instanceof FormData;
+    const headers = isFormData ? { 'Content-Type': 'multipart/form-data' } : {};
 
     return new Promise((resolve, reject) => {
       axios
-        .post<T>(url, data)
+        .post<T>(url, data, { headers })
         .then((res: AxiosResponse<T>) => {
           const responseData = res.data;
           resolve(responseData);
@@ -64,3 +74,13 @@ export const apiUtils: ApiUtils = {
     });
   },
 };
+
+const formDataToObject = (formData: FormData) => {
+  const object: paramsTypes = {};
+
+  formData.forEach((value, key) => {
+    object[key] = dataUtils.isBlob(value) ? value : value;
+  });
+
+  return object;
+}

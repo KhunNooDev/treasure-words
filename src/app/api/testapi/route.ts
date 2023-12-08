@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { apiUtils } from '@/utils/apiUtils';
+import { dataUtils } from '@/utils/dataUtils';
 
 // For getting simple data or open data already
 export async function GET(req: NextRequest) {
@@ -7,7 +8,7 @@ export async function GET(req: NextRequest) {
   let data = {};
 
   if (id) {
-    const foundData = await findDataById(id);
+    const foundData = await findDataById(String(id));
     data = {
       success: true,
       data: foundData,
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
 
   if (id) {
     try {
-      await updateDataById(id, some_data);
+      await updateDataById(String(id), some_data);
       data = {
         success: true,
       };
@@ -52,13 +53,13 @@ export async function POST(req: NextRequest) {
 }
 
 // Mock functions for illustration purposes
-async function findDataById(id: string | number) {
+async function findDataById(id: string) {
   // Replace this with your actual logic to find data by id
   // For example, querying a database
   return { id, /* other data properties */ };
 }
 
-async function updateDataById(id: string | number, newData: any) {
+async function updateDataById(id: string, newData: any) {
   // Replace this with your actual logic to update data by id
   // For example, updating a database record
   console.log(`Updating data with id ${id} to:`, newData);

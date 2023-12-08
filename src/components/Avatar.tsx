@@ -1,5 +1,5 @@
 'use client'
-import Image from 'next/image'
+import Image from '@/components/Image';
 
 interface AvatarProps {
   src?: string | null | undefined

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { apiUtils } from '@/utils/apiUtils';
 import prisma from '@/libs/prismadb'
+import { dataUtils } from '@/utils/dataUtils';
 
 // [id] For getting data
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
   
   if (id) { //edit
     try {
-      await updateDataById(id, wordData);
+      await updateDataById(String(id), wordData);
       data = {
         success: true,
       };
@@ -67,7 +68,7 @@ export async function DELETE(req: NextRequest) {
 
   if (id) {
     try {
-      await deleteDataById(id);
+      await deleteDataById(String(id));
       data = {
         success: true,
       };
@@ -93,7 +94,7 @@ async function selectAllItem() {
   return prisma.word.findMany();
 }
 
-async function selectById(id: string | number) {
+async function selectById(id: string) {
   return prisma.word.findUnique({
     where: {
       id: String(id),
@@ -107,7 +108,7 @@ async function insertData(wordData: any) {
   });
 }
 
-async function updateDataById(id: string | number, newData: any) {
+async function updateDataById(id: string, newData: any) {
   return prisma.word.update({
     where: {
       id: String(id),
@@ -116,7 +117,7 @@ async function updateDataById(id: string | number, newData: any) {
   });
 }
 
-async function deleteDataById(id: string | number) {
+async function deleteDataById(id: string) {
   return prisma.word.delete({
     where: {
       id: String(id),
