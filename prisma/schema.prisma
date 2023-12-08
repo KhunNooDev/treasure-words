@@ -77,15 +77,15 @@ model Reservation {
 }
 
 model Word {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  word           String
-  partsOfSpeech  String
-  meaning        String[]
-  example        String
-  synonyms       String[]
-  antonyms       String[]
-  image          String
-  categories     String[]
-  level          String
-  phonetics      String
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  word          String
+  partsOfSpeech String
+  meaning       String[]
+  example       String
+  synonyms      String[]
+  antonyms      String[]
+  image         Bytes // Use Bytes to store binary data
+  categories    String[]
+  level         String
+  phonetics     String
 }
