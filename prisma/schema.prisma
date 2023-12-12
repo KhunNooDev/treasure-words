@@ -15,15 +15,14 @@ model User {
   name           String?
   email          String?   @unique
   emailVerified  DateTime?
-  image          String?
+  image          Bytes?
   hashedPassword String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
-  favoriteIds    String[]  @db.ObjectId
 
   accounts     Account[]
-  listings     Listing[]
-  reservations Reservation[]
+  createdWords Word[]    @relation("createdByUser")
+  updatedWords Word[]    @relation("updatedByUser")
 }
 
 model Account {
@@ -45,47 +44,25 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-model Listing {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String?  @db.ObjectId
-  title         String
-  description   String
-  imageSrc      String
-  createAt      DateTime @default(now())
-  category      String
-  roomCount     Int
-  bathroomCount Int
-  guestCount    Int
-  locationValue String
-  price         Int
-
-  User         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  reservations Reservation[]
-}
-
-model Reservation {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId     String?  @db.ObjectId
-  listingId  String?  @db.ObjectId
-  startDate  DateTime
-  endDate    DateTime
-  totalPrice Int
-  createAt   DateTime @default(now())
-
-  User    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Listing Listing? @relation(fields: [listingId], references: [id], onDelete: Cascade)
-}
-
 model Word {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   word          String
   partsOfSpeech String
-  meaning       String[]
+  phonetics     String
+  meaning       String
   example       String
-  synonyms      String[]
-  antonyms      String[]
-  image         Bytes // Use Bytes to store binary data
+  image         Bytes?
   categories    String[]
   level         String
-  phonetics     String
+  synonyms      String[] @default([])
+  antonyms      String[] @default([])
+
+  // created
+  createdAt   DateTime @default(now())
+  createdBy   User?    @relation("createdByUser", fields: [createdById], references: [id])
+  createdById String?  @db.ObjectId
+  // updated
+  updatedAt   DateTime @updatedAt
+  updatedBy   User?    @relation("updatedByUser", fields: [updatedById], references: [id])
+  updatedById String?  @db.ObjectId
 }
