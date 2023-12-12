@@ -10,27 +10,26 @@ module.exports = {
   daisyui: {
     themes: [{
       dark: {
-        "primary": "#ff9eb8",    // Light Pink
-        "secondary": "#add8e6",  // Light Blue
-        "accent": "#ffd700",     // Gold
-        "neutral": "#1a1a1a",    // Dark Gray
-        "base-100": "#333333",   // Very Dark Gray
-        "info": "#87ceeb",       // Sky Blue
-        "success": "#98fb98",    // Pale Green
-        "warning": "#ffc0cb",    // Pink
-        "error": "#ff9eb8"       // Light Pink (matching primary)
+        "primary": "#336699",
+        "secondary": "#669933",
+        "accent": "#993366",
+        "neutral": "#444444",
+        "base-100": "#222222",
+        "info": "#99ccff",
+        "success": "#ccffcc",
+        "warning": "#ffcc99",
+        "error": "#ff6666"
       },
-
       light: {
-        "primary": "#ffb6c1",    // Light Pink
-        "secondary": "#add8e6",  // Light Blue
-        "accent": "#ffd700",     // Gold
-        "neutral": "#f0f0f0",    // Very Light Gray
-        "base-100": "#ffffff",   // White
-        "info": "#87ceeb",       // Sky Blue
-        "success": "#98fb98",    // Pale Green
-        "warning": "#ffc0cb",    // Pink
-        "error": "#ffb6c1"       // Light Pink (matching primary)
+        "primary": "#99ccff",
+        "secondary": "#669933",
+        "accent": "#993366",
+        "neutral": "#dddddd",
+        "base-100": "#ffffff",
+        "info": "#99ccff",
+        "success": "#ccffcc",
+        "warning": "#ffcc99",
+        "error": "#ff6666"
       }
     }]
   }
