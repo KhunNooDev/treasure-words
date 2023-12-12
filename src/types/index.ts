@@ -1,10 +1,5 @@
-import { User } from '@prisma/client'
-import { Session } from 'next-auth'
+import { User, Word } from '@prisma/client'
 
-// export type SafeUser = Omit<User, 'createdAt' | 'updatedAt' | 'emailVerified'> & {
-//   createdAt: string
-//   updatedAt: string
-//   emailVerified: string | null
-// }
-
-export type SafeUser = Session['user'] | null
+export interface WordData extends Word {
+  dataUrl: string | null;
+}
