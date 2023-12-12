@@ -166,14 +166,32 @@ export function IDropdown({ id, label, options, w, required, disable }: Dropdown
   );
 }
 
-export function MultiAddInput({ id, label, w, placeholder, required, disable }: InputProps) {
-  const { register, formState: { errors } } = useFormContext();
-  const [additionalInputs, setAdditionalInputs] = useState<string[]>([]);
+export function ITextMulti({ id, label, w, placeholder, required, disable }: InputProps) {
+  const { register, setValue, formState: { errors } } = useFormContext();
+  const [textList, setTextList] = useState<string[]>([]);
   const errorClass = errors[id] ? 'border-red-500 focus:border-red-500' : 'border';
   const widthPercentage = w ? `${(w / 12) * 100}%` : '100%';
+  const inputRef = useRef<HTMLInputElement>(null);
+  const inputMultiRef = useRef<HTMLInputElement>(null);
 
-  const handleAddInput = () => {
-    setAdditionalInputs([...additionalInputs, '']); // Add an empty string for a new input
+  useEffect(() => {
+    register(id, { required });
+  }, [id, register, required]);
+
+  useEffect(() => {
+    setValue(id, textList);
+  }, [textList]);
+
+  const handleAddClick = () => {
+    const value = inputMultiRef.current?.value
+    if (value && value.trim() !== '') {
+      setTextList((prevList) => [...prevList, value]);
+      inputMultiRef.current!.value = ''; // Clear the input field after adding
+    }
+  };
+
+  const handleRemoveClick = (index: number) => {
+    setTextList((prevList) => prevList.filter((_, i) => i !== index));
   };
 
   return (
@@ -184,22 +202,36 @@ export function MultiAddInput({ id, label, w, placeholder, required, disable }: 
           {required && <span className='text-red-500'> * </span>}
         </span>
       </label>
-
-      {additionalInputs.map((input, index) => (
-        <IText key={index} id={`${id}_${index}`} label={`Additional ${label}`} />
-      ))}
-
-      <button type="button" className="btn btn-primary mr-2" onClick={handleAddInput}>
-        Add
-      </button>
-
-      {errors[id] && (
-        <label className="label">
-          <span className="label-text-alt text-red-500">
-            {errors[id]?.message?.toString() || `${label} is required`}
-          </span>
-        </label>
-      )}
+      <div className="flex gap-2">
+        <input ref={inputRef} className="hidden" />
+        <input
+          ref={inputMultiRef}
+          type="text"
+          placeholder={placeholder}
+          className={`input input-bordered w-full ${errorClass}`}
+          style={{ width: widthPercentage }}
+          disabled={disable}
+        />
+        <button type='button' onClick={handleAddClick}
+          className="btn btn-primary"
+        >
+          Add
+        </button>
+      </div>
+      <ul className="list-disc ml-4">
+      {textList.map((text, index) => (
+          <li key={index} className="mb-2 flex items-center">
+            <span className="mr-2">{text}</span>
+            <button
+              type="button"
+              onClick={() => handleRemoveClick(index)}
+              className="text-red-500 hover:text-red-700 focus:outline-none"
+            >
+              Remove
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -288,9 +320,9 @@ export function IFileImage({ id, required, disable }: IFileImageProps) {
         disabled={disable}
         // required={required}
       />
-      {required && !fileInputValue && (
+      {/* {required && !fileInputValue && (
         <p className="text-red-500">This field is required</p>
-      )}
+      )} */}
     </div>
   );
 }

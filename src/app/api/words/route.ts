@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/libs/auth";
 import { apiUtils } from '@/utils/apiUtils';
 import prisma from '@/libs/prismadb'
 import { dataUtils } from '@/utils/dataUtils';
-import { WordData } from '@/types/word.type';
+import { WordData } from '@/types';
 /*
 api/words/[id]/route.ts:
   GET: Fetch a specific word by id.
@@ -31,17 +33,16 @@ export async function GET(req: NextRequest) {
       })
     };
   } else {
-    const words = await prisma.word.findMany()
+    const words = await prisma.word.findMany()    
     // Convert each image buffer to base64, include imageType, and create data URL
     const _words: WordData[] = words.map((word) => {
-      const base64Image = word.image.toString('base64');
-      const imageType = dataUtils.getImageType(word.image);
-      const dataUrl = imageType === 'unknown' ? null : `data:${imageType};base64,${base64Image}`;
-
-      return {
-        ...word,
-        dataUrl,
-      };
+      let dataUrl: string | null = null
+      if(word.image){
+        const base64Image = Buffer.from(word.image).toString('base64'); //word.image.toString('base64');
+        const imageType = dataUtils.getImageType(word.image);
+        dataUrl = imageType === 'unknown' ? null : `data:${imageType};base64,${base64Image}`;
+      }
+      return { ...word, dataUrl };
     });
 
     data = {
@@ -59,11 +60,10 @@ export async function POST(req: NextRequest) {
     
   try {
     const { word, partsOfSpeech, meaning, example, synonyms, antonyms, image, categories, level, phonetics } = await apiUtils.getParams(req);
-
-    // if (!word || !partsOfSpeech || !meaning || !example || !categories || !level || !phonetics) {
-    //   return NextResponse.json({ success: false, error: 'Invalid request parameters' });
-    // }
-
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id
+    console.log(userId);
+    
     let imageData = null;
     if (image && dataUtils.isBlob(image)) {
       const buffer = Buffer.from(await image.arrayBuffer());
@@ -73,21 +73,19 @@ export async function POST(req: NextRequest) {
     const wordData:any = {
       word,
       partsOfSpeech,
-      meaning: ["meaning1", "meaning2"],
-      example: "Example sentence",
-      synonyms: ["synonym1", "synonym2"],
-      antonyms: ["antonym1", "antonym2"],
+      meaning,
+      example,
       image: imageData,
-      categories: ["category1", "category2"],
-      level: "Intermediate",
-      phonetics: "faʊnd",
+      categories,
+      level,
+      phonetics,
+      // synonyms,
+      // antonyms,
+      createdById: userId, // Set the createdById field to the user ID
     }
     const result = await prisma.word.create({
       data: wordData,
     });
-    // const createdWord = await prisma.word.create({
-    //   data: wordData as any,
-    // });
     data = {
       success: true,
       data: result,
