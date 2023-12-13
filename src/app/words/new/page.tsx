@@ -2,9 +2,10 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import { FieldValues, SubmitHandler } from 'react-hook-form'
 import { apiUtils } from '@/utils/apiUtils';
-import { WordData } from '@/types';
-import { FormInput, IDropdown, IFileImage, IText, ITextArea, ITextMulti } from '@/components/Form/Inputs';
+import { DropdownItem, WordData } from '@/types';
+import { FormInput, IDropdown, IDropdownMulti, IFileImage, IText, ITextArea, ITextMulti } from '@/components/Form/Inputs';
 import { dataUtils } from '@/utils/dataUtils';
+import { useAxiosSWR } from '@/utils/useAxiosSWR';
 
 const partOfSpeechOptions = [
   { value: 'noun', label: 'Noun' },
@@ -17,8 +18,9 @@ const partOfSpeechOptions = [
   { value: 'interjection', label: 'Interjection' },
 ];
 
-
 export default function Words() {
+  const { data:dropdownWords = [] } = useAxiosSWR<DropdownItem[]>('common/getDropdownWords');
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     // data
     // debugger;
@@ -39,8 +41,8 @@ export default function Words() {
         <IText id="meaning" label="Meaning" w={6} placeholder="Enter text" required />
         <ITextArea id='example' label='Example' w={8} placeholder="Enter text" required />
         <ITextMulti id="categories" label="Categories" w={6} placeholder="Enter text" required />
-        <ITextMulti id="synonyms" label="Synonyms" w={6} placeholder="Enter text" />
-        <ITextMulti id="antonyms" label="Antonyms" w={6} placeholder="Enter text" />
+        <IDropdownMulti id="synonyms" label="Synonyms" options={dropdownWords} />
+        <IDropdownMulti id="antonyms" label="Antonyms" options={dropdownWords} />
         <IText id='level' label='Level' w={6} placeholder="Enter text" required />
       </FormInput>
     </main>

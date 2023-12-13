@@ -4,7 +4,7 @@ import { dataUtils } from "./dataUtils";
 
 const apiBaseUrl = '/api'; // Update this to match your API base URL
 
-type dataApi<T> = { success: boolean, data: T, error: string };
+type dataApi<T> = { success: boolean, data: T, error?: string };
 type paramsTypes = { [key: string]: string | number | Blob | null }
 
 interface ApiUtils {

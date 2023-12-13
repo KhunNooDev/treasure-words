@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { SubmitHandler, FieldValues, useForm, useFormContext, FormProvider, useWatch, RegisterOptions } from 'react-hook-form';
 import { FaFileImage, FaTimesCircle } from 'react-icons/fa';
 import Image from '@/components/Image';
+import { DropdownItem } from '@/types';
 
 interface FormInputProps {
   children: React.ReactNode;
@@ -23,7 +24,7 @@ interface InputProps {
 }
 
 interface DropdownProps extends InputProps {
-  options: Array<{ value: string; label: string }>;
+  options: DropdownItem[]
 } 
 interface IFileImageProps extends Omit<InputProps, 'label'> {}
 
@@ -222,6 +223,94 @@ export function ITextMulti({ id, label, w, placeholder, required, disable }: Inp
       {textList.map((text, index) => (
           <li key={index} className="mb-2 flex items-center">
             <span className="mr-2">{text}</span>
+            <button
+              type="button"
+              onClick={() => handleRemoveClick(index)}
+              className="text-red-500 hover:text-red-700 focus:outline-none"
+            >
+              Remove
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export function IDropdownMulti({ id, label, options, required, disable }: DropdownProps) {
+  const { register, setValue, formState: { errors } } = useFormContext();
+  const [selectedValue, setSelectedValue] = useState<string>('');
+  const [selectedLabel, setSelectedLabel] = useState<string>('');
+  const [selectedItems, setSelectedItems] = useState<Array<{ value: string; label: string }>>([]);
+  const errorClass = errors[id] ? 'border-red-500 focus:border-red-500' : 'border';
+  const inputRef = useRef<HTMLSelectElement>(null);
+
+  useEffect(() => {
+    register(id, { required });
+  }, [id, register, required]);
+
+  useEffect(() => {
+    setValue(id, selectedValue);
+  }, [id, setValue, selectedValue]);
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedOption = options.find(option => option.value === e.target.value);
+
+    if (selectedOption) {
+      setSelectedValue(selectedOption.value);
+      setSelectedLabel(selectedOption.label);
+    }
+  };
+
+  const handleAddClick = () => {
+    if (selectedValue.trim() !== '') {
+      // Check if the selected value is not already in the list
+      if (!selectedItems.some(item => item.value === selectedValue)) {
+        // Add the selected value and label to the list
+        setSelectedItems(prevItems => [...prevItems, { value: selectedValue, label: selectedLabel }]);
+      }
+
+      // Clear the selected value and label after adding
+      setSelectedValue('');
+      setSelectedLabel('');
+    }
+  };
+
+  const handleRemoveClick = (index: number) => {
+    setSelectedItems(prevItems => prevItems.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="form-control w-full">
+      <label className="label">
+        <span className="label-text">
+          {label}
+          {required && <span className='text-red-500'> * </span>}
+        </span>
+      </label>
+      <div className="flex gap-2">
+        <select
+          ref={inputRef}
+          value={selectedValue}
+          onChange={handleSelectChange}
+          className={`select select-bordered w-full ${errorClass}`}
+          disabled={disable}
+        >
+          <option value="" disabled hidden>{'Select an option'}</option>
+          {options.map((option, index) => (
+            <option key={index} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <button type='button' onClick={handleAddClick} className="btn btn-primary">
+          Add
+        </button>
+      </div>
+      <ul className="list-disc ml-4 mt-2">
+        {selectedItems.map((item, index) => (
+          <li key={index} className="mb-2 flex items-center">
+            <span className="mr-2">{item.label}</span>
             <button
               type="button"
               onClick={() => handleRemoveClick(index)}
