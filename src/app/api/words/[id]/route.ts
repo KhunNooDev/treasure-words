@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { apiUtils } from '@/utils/apiUtils';
-import prisma from '@/libs/prismadb'
+import prisma from '@/database/prismadb'
 import { dataUtils } from '@/utils/dataUtils';
 
 // [id] For getting data

@@ -1,21 +1,21 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { dataUtils } from "./dataUtils";
+import { DataApiType } from "@/database/utils/apiResponse";
 
 const apiBaseUrl = '/api'; // Update this to match your API base URL
 
-type dataApi<T> = { success: boolean, data: T, error?: string };
-type paramsTypes = { [key: string]: string | number | Blob | null }
+type ParamsTypes = { [key: string]: string | number | Blob | null }
 
 interface ApiUtils {
-  getParams(req: NextRequest): Promise<paramsTypes>;
+  getParams(req: NextRequest): Promise<ParamsTypes>;
   getData: <T>(endpoint: string, params?: Record<string, any>) => Promise<T>;
   postData: <T>(endpoint: string, params?: Record<string, any>) => Promise<T>;
 }
 
 export const apiUtils: ApiUtils = {
   getParams: async (req: NextRequest) => {
-    let queryParams: paramsTypes = {};
+    let queryParams: ParamsTypes = {};
 
     if (req.method === 'GET') {
       const { searchParams } = new URL(req.url);
@@ -33,6 +33,11 @@ export const apiUtils: ApiUtils = {
         queryParams = data;
       }
     }
+    queryParams['email'] = typeof queryParams['email'] === 'string'
+      ? queryParams['email']
+      : queryParams['email'] !== null && queryParams['email'] !== undefined
+        ? String(queryParams['email'])
+        : '';
     return queryParams;
   },
   getData: <T>(endpoint: string, params = {}): Promise<T> => {
@@ -44,9 +49,10 @@ export const apiUtils: ApiUtils = {
           params: params,
         })
         .then((res: AxiosResponse<T>) => {
-          const responseData = res.data as dataApi<T>;
-          if(responseData.success){
-            resolve(responseData.data);
+          const responseData = res.data as DataApiType<T>;
+          const {success, data} = responseData
+          if(success && data){
+            resolve(data);
           }else{
             reject(responseData.error);
           }
@@ -76,7 +82,7 @@ export const apiUtils: ApiUtils = {
 };
 
 const formDataToObject = (formData: FormData) => {
-  const object: paramsTypes = {};
+  const object: ParamsTypes = {};
 
   formData.forEach((value, key) => {
     object[key] = dataUtils.isBlob(value) ? value : value;

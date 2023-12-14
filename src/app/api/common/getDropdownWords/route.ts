@@ -1,22 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/libs/auth'
-import prisma from '@/libs/prismadb'
-import { Prisma } from '@prisma/client'
-import { ErrorType, handleErrorResponse } from '../../errorHandling'
+import { NextRequest } from 'next/server'
+
+import prisma from '@/database/prismadb'
+import { getSession, handleNotLoggedInResponse } from '@/database/utils/sessionHandling'
+import { jsonResponse, errorResponse, ErrorType} from '@/database/utils/apiResponse'
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
-    if (!session) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'You are not logged in',
-        },
-        { status: 401 },
-      )
-    }
+    const session = await getSession()
+    if (!session) return handleNotLoggedInResponse()
+    
     const wordsWithIdAndWord = await prisma.word.findMany({
       select: {
         id: true,
@@ -29,14 +21,13 @@ export async function GET(req: NextRequest) {
       label: word.word,
     }))
 
-    return NextResponse.json({
+    return jsonResponse({
       success: true,
       data: dropdownData,
-    })
+    });
   } catch (error) {
-    return handleErrorResponse(error as ErrorType)
+    return errorResponse(error as ErrorType)
   } finally {
-    // Close the Prisma client
-    await prisma.$disconnect()
+    await prisma.$disconnect() // Close the Prisma client
   }
 }
