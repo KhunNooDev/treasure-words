@@ -56,6 +56,9 @@ model Word {
   level         String
   synonyms      String[] @default([])
   antonyms      String[] @default([])
+  language      String
+
+  translationIds String[] @default([])
 
   // created
   createdAt   DateTime @default(now())
