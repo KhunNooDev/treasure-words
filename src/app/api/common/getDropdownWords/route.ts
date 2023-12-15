@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server'
 import prisma from '@/database/prismadb'
 import { getSession, handleNotLoggedInResponse } from '@/database/utils/sessionHandling'
 import { jsonResponse, errorResponse, ErrorType} from '@/database/utils/apiResponse'
+import { closePrismaClient } from '@/database/actions'
 
 export async function GET(req: NextRequest) {
   try {
@@ -28,6 +29,6 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     return errorResponse(error as ErrorType)
   } finally {
-    await prisma.$disconnect() // Close the Prisma client
+    await closePrismaClient();
   }
 }

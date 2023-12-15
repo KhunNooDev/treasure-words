@@ -5,7 +5,7 @@ import { DataApiType } from "@/database/utils/apiResponse";
 
 const apiBaseUrl = '/api'; // Update this to match your API base URL
 
-type ParamsTypes = { [key: string]: string | number | Blob | null }
+type ParamsTypes = { [key: string]: string | string[] | number | number[] | Blob | null }
 
 interface ApiUtils {
   getParams(req: NextRequest): Promise<ParamsTypes>;
@@ -85,8 +85,61 @@ const formDataToObject = (formData: FormData) => {
   const object: ParamsTypes = {};
 
   formData.forEach((value, key) => {
-    object[key] = dataUtils.isBlob(value) ? value : value;
+    const match = key.match(/^(\w+)\[(\d+)\]$/);
+    if (match) {
+      const fieldName = match[1];
+      
+      if (dataUtils.isString(value)) {
+        if (object[fieldName] === undefined) {
+          object[fieldName] = [value]
+        } else {
+          (object[fieldName] as string[]).push(value);
+        }
+      }
+      if (dataUtils.isNumber(value)) {
+        if (object[fieldName] === undefined) {
+          object[fieldName] = [value]
+        } else {
+          (object[fieldName] as number[]).push(value);
+        }
+      }
+    } else {
+      object[key] = dataUtils.isBlob(value) ? value : value;
+    }
   });
 
   return object;
 }
+
+// const formDataToObject = (formData: FormData) => {
+//   const object: ParamsTypes = {};
+
+//   formData.forEach((value, key) => {
+//     const match = key.match(/^(\w+)\[(\d+)\]$/);
+
+//     if (match) {
+//       const fieldName = match[1];
+//       const index = parseInt(match[2]);
+
+//       if (object[fieldName] !== null && object[fieldName] !== undefined) {
+//         if (Array.isArray(object[fieldName])) {
+//           // Make sure object[fieldName][index] is defined before assigning
+//           if (object[fieldName][index] !== undefined) {
+//             object[fieldName][index] = value.toString();
+//           } else {
+//             object[fieldName][index] = value.toString();
+//           }
+//         } else {
+//           object[fieldName] = [object[fieldName].toString(), value.toString()].filter(Boolean) as string[];
+//         }
+//       } else {
+//         // If object[fieldName] is null or undefined, create a new array
+//         object[fieldName] = [value.toString()];
+//       }
+//     } else {
+//       object[key] = value.toString();
+//     }
+//   });
+
+//   return object;
+// };

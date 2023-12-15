@@ -1,12 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/database/auth";
-import { apiUtils } from '@/utils/apiUtils';
+import { NextRequest } from 'next/server';
+import { Word } from '@prisma/client';
+
 import prisma from '@/database/prismadb'
-import { dataUtils } from '@/utils/dataUtils';
-import { WordData } from '@/types';
 import { getSession, handleNotLoggedInResponse } from '@/database/utils/sessionHandling';
 import { DataApiType, ErrorType, errorResponse, jsonResponse } from '@/database/utils/apiResponse';
+import { closePrismaClient, create, selectAll } from '@/database/actions';
+import { apiUtils } from '@/utils/apiUtils';
+import { dataUtils } from '@/utils/dataUtils';
+import { WordData } from '@/types';
 /*
 api/words/[id]/route.ts:
   GET: Fetch a specific word by id.
@@ -41,7 +42,8 @@ export async function GET(req: NextRequest) {
         })
       };
     } else {
-      const words = await prisma.word.findMany()    
+      const words = await selectAll('word') as Word[];
+    
       // Convert each image buffer to base64, include imageType, and create data URL
       const _words: WordData[] = words.map((word) => {
         let dataUrl: string | null = null
@@ -69,13 +71,11 @@ export async function GET(req: NextRequest) {
 
 // For updating data (create new)
 export async function POST(req: NextRequest) {
-  let data = {};
-    
   try {
+    const session = await getSession()
+    if (!session) return handleNotLoggedInResponse()
+    const userId = session.user?.id
     const { word, partsOfSpeech, meaning, example, synonyms, antonyms, image, categories, level, phonetics } = await apiUtils.getParams(req);
-    const session = await getServerSession(authOptions);
-    const userId = session?.user?.id
-    console.log(userId);
     
     let imageData = null;
     if (image && dataUtils.isBlob(image)) {
@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
       imageData = buffer;
     }
     
-    const wordData:any = {
+    const wordData = {
       word,
       partsOfSpeech,
       meaning,
@@ -92,24 +92,20 @@ export async function POST(req: NextRequest) {
       categories,
       level,
       phonetics,
+      language: 'en',
       // synonyms,
       // antonyms,
       createdById: userId, // Set the createdById field to the user ID
     }
-    const result = await prisma.word.create({
-      data: wordData,
-    });
-    data = {
+    const result = await create('word', wordData)
+
+    return jsonResponse({
       success: true,
       data: result,
-    };
+    });
   } catch (error) {
-    console.error('Error inserting data:', error);
-    data = {
-      success: false,
-      error: 'Failed to insert data.',
-    };
+    return errorResponse(error as ErrorType)
+  } finally {
+    await closePrismaClient();
   }
-
-  return NextResponse.json(data);
 }

@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import bcrypt from 'bcrypt'
 
-import prisma from '@/database/prismadb'
 import { apiUtils } from '@/utils/apiUtils';
-import { ErrorType, errorResponse } from '@/database/utils/apiResponse'
+import { ErrorType, errorResponse, jsonResponse } from '@/database/utils/apiResponse'
+import { closePrismaClient, create } from '@/database/actions';
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,17 +15,15 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    const user = await prisma.user.create({
-      data: { email: email.toLowerCase(), name, hashedPassword },
-    })
+    const data = { email: email.toLowerCase(), name, hashedPassword }
+    await create('user', data)
 
-    // return NextResponse.json({
-    //   user: {
-    //     name: user.name,
-    //     email: user.email,
-    //   },
-    // })
-  } catch (error: any) {
+    return jsonResponse({
+      success: true,
+    });
+  } catch (error) {
     return errorResponse(error as ErrorType)
+  } finally {
+    await closePrismaClient();
   }
 }
