@@ -29,7 +29,15 @@ export const parseExcelFile = (file: File) => {
 }
 
 export const exportToExcel = (data: any[], fileName: string, sheetName: string) => {
-  const ws = XLSX.utils.json_to_sheet(data);
+  const ws = XLSX.utils.json_to_sheet(data.map(item => {
+    const formattedItem = { ...item };
+    for (const key in formattedItem) {
+      if (Array.isArray(formattedItem[key])) {
+        formattedItem[key] = formattedItem[key].join(', ');
+      }
+    }
+    return formattedItem;
+  }));
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, sheetName);
   const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
