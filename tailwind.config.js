@@ -10,27 +10,47 @@ module.exports = {
   daisyui: {
     themes: [{
       dark: {
-        "primary": "#336699",
-        "secondary": "#669933",
-        "accent": "#993366",
-        "neutral": "#444444",
-        "base-100": "#222222",
-        "info": "#99ccff",
-        "success": "#ccffcc",
-        "warning": "#ffcc99",
-        "error": "#ff6666"
+        "primary": "#3498db",
+        "primary-content": "#fffeff",
+        "secondary": "#2ecc71",
+        "secondary-focus": "#bd0091",
+        "secondary-content": "#fffeff",
+        "accent": "#37cdbe",
+        "accent-focus": "#2aa79b",
+        "accent-content": "#fffeff",
+        "neutral": "#2a2e37",
+        "neutral-focus": "#16181d",
+        "neutral-content": "#fffeff",
+        "base-100": "#3d4451",
+        "base-200": "#2a2e37",
+        "base-300": "#16181d",
+        "base-content": "#ebecf0",
+        "info": "#66c6ff",
+        "success": "#87d039",
+        "warning": "#e2d562",
+        "error": "#ff6f6f"
       },
       light: {
-        "primary": "#99ccff",
-        "secondary": "#669933",
-        "accent": "#993366",
-        "neutral": "#dddddd",
-        "base-100": "#ffffff",
-        "info": "#99ccff",
-        "success": "#ccffcc",
-        "warning": "#ffcc99",
-        "error": "#ff6666"
-      }
-    }]
-  }
-}
+        "primary": "#3498db",
+        "primary-content": "#fffeff",
+        "secondary": "#2ecc71",
+        "secondary-focus": "#bd0091",
+        "secondary-content": "#fffeff",
+        "accent": "#37cdbe",
+        "accent-focus": "#2aa79b",
+        "accent-content": "#fffeff",
+        "neutral": "#ebecf0",
+        "neutral-focus": "#fffeff",
+        "neutral-content": "#fffeff",
+        "base-100": "#fffeff",
+        "base-200": "#ebecf0",
+        "base-300": "#dfe1e6",
+        "base-content": "#16181d",
+        "info": "#66c6ff",
+        "success": "#87d039",
+        "warning": "#e2d562",
+        "error": "#ff6f6f"
+      },
+    }],
+  },
+};
