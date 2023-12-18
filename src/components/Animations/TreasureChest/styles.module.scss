@@ -1,0 +1,91 @@
+// styles.module.scss
+$color1: #8B4513; // Brown for chest
+$color2: #FFD700; // Gold color
+$color3: #228B22; // Green for jewels
+
+.treasureChest {
+  width: 200px;
+  height: 150px;
+  perspective: 600px; // Perspective for 3D effect
+  margin: 20px auto;
+
+  .chest {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+
+    .lid {
+      position: absolute;
+      width: 100%;
+      height: 50%;
+      top: 0;
+      background-color: $color1;
+      border-radius: 10px 10px 0 0;
+      transform-origin: bottom center;
+      transform-style: preserve-3d;
+      transform: rotateX(90deg); // Opened lid
+
+      .lidTop {
+        position: absolute;
+        width: 100%;
+        height: 20px;
+        background-color: $color1;
+        border-radius: 10px 10px 0 0;
+        transform-origin: bottom center;
+      }
+    }
+
+    .base {
+      position: absolute;
+      width: 100%;
+      height: 50%;
+      bottom: 0;
+      background-color: $color1;
+      border-radius: 0 0 10px 10px;
+      transform-origin: top center;
+      transform-style: preserve-3d;
+
+      .gold {
+        position: absolute;
+        width: 60px;
+        height: 40px;
+        background-color: $color2;
+        border-radius: 10px;
+        top: 40%;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .jewel {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-color: $color3;
+        border-radius: 50%;
+        top: 70%;
+        left: 30%;
+      }
+
+      .jewel2 {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-color: $color3;
+        border-radius: 50%;
+        top: 70%;
+        left: 50%;
+      }
+
+      .jewel3 {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-color: $color3;
+        border-radius: 50%;
+        top: 70%;
+        left: 70%;
+      }
+    }
+  }
+}
