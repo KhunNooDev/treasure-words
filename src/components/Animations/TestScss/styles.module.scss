@@ -1,0 +1,225 @@
+$bgColor: #3498db;
+$borderColor : #88b5d3;
+
+.circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: $bgColor;
+}
+
+.circleWithBorder {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 5px solid $borderColor;
+  background-color: $bgColor;
+}
+
+.square {
+  width: 100px;
+  height: 100px;
+  background-color: $bgColor;
+}
+
+.rectangle {
+  width: 150px;
+  height: 100px;
+  background-color: $bgColor;
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  border-bottom: 87px solid $bgColor;
+}
+
+.star {
+  width: 100px;
+  height: 100px;
+  background-color: $bgColor;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.pentagon {
+  width: 100px;
+  height: 100px;
+  background-color: $bgColor;
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0 38%);
+}
+
+.hexagon {
+  width: 100px;
+  height: 100px;
+  background-color: $bgColor;
+  clip-path: polygon(50% 0%, 100% 29%, 100% 71%, 50% 100%, 0 71%, 0 29%);
+}
+
+.octagon {
+  width: 100px;
+  height: 100px;
+  background-color: $bgColor;
+  clip-path: polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%, 71% 100%, 29% 100%, 0 71%, 0 29%);
+}
+
+.crescentMoon {
+  width: 100px;
+  height: 100px;
+  background-color: $bgColor;
+  border-radius: 50%;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: var(--fallback-b1, oklch(var(--b1) / 1));
+    border-radius: 50%;
+    left: 35%;
+    top: 0;
+  }
+}
+
+.diamond {
+  width: 100px;
+  height: 100px;
+  background-color: #3498db;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.arrow {
+  width: 100px;
+  height: 100px;
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background-color: #3498db;
+  }
+
+  &::before {
+    width: 10%;
+    height: 40%;
+    top: 30%;
+    left: 45%;
+    transform: rotate(45deg);
+  }
+
+  &::after {
+    width: 10%;
+    height: 40%;
+    top: 30%;
+    left: 45%;
+    transform: rotate(-45deg);
+  }
+}
+
+
+.box {
+  $width: 100px;
+  $height: 100px;
+  $depth: 99px;
+  $red: 108;
+  $green: 153;
+  $blue: 198;
+  $opacity: 1;
+  $shadowRatio: 10;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: rotate(45deg);
+  transform-style: preserve-3d;
+
+  .faceFront {
+    position: absolute;
+    width: $width;
+    height: $height;
+    transform: translate(-50%, -50%) rotateY(0deg) translateZ($depth / 2);
+    background: rgba($red - 5 * $shadowRatio, $green - 5 * $shadowRatio, $blue - 5 * $shadowRatio, $opacity);
+  }
+
+  .faceLeft {
+    position: absolute;
+    width: $depth;
+    height: $height;
+    transform: translate(-50%, -50%) rotateY(90deg) translateZ($width / 2);
+    background: rgba($red - 10 * $shadowRatio, $green - 10 * $shadowRatio, $blue - 10 * $shadowRatio, $opacity);
+  }
+
+  .faceTop {
+    position: absolute;
+    width: $width;
+    height: $depth;
+    transform: translate(-50%, -50%) rotateX(90deg) translateZ($height / 2);
+    background: rgba($red, $green, $blue, $opacity);
+  }
+
+  .faceBottom {
+    position: absolute;
+    width: $width;
+    height: $depth;
+    transform: translate(-50%, -50%) rotateX(-90deg) translateZ($height / 2);
+    background: rgba($red - 20 * $shadowRatio, $green - 20 * $shadowRatio, $blue - 20 * $shadowRatio, $opacity);
+  }
+
+  .faceRight {
+    position: absolute;
+    width: $depth;
+    height: $height;
+    transform: translate(-50%, -50%) rotateY(-90deg) translateZ($width / 2);
+    background: rgba($red - 10 * $shadowRatio, $green - 10 * $shadowRatio, $blue - 10 * $shadowRatio, $opacity);
+  }
+
+  .faceBack {
+    position: absolute;
+    width: $width;
+    height: $height;
+    transform: translate(-50%, -50%) rotateY(180deg) translateZ($depth / 2);
+    background: rgba($red - 15 * $shadowRatio, $green - 15 * $shadowRatio, $blue - 15 * $shadowRatio, $opacity);
+  }
+}
+
+
+
+.container {
+  width: 100px;
+  height: 100px;
+  background-color: #f0f0f0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .heart {
+    width: 50%;
+    height: 50%;
+    background: $bgColor;
+    transform: translate(0%, 5%) rotate(45deg);
+    position: relative;
+
+    &::before,
+    &::after {
+      content: '';
+      background: $bgColor;
+      border-radius: 50%;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    &::before {
+      top: -45%;
+    }
+
+    &::after {
+      left: -45%;
+    }
+  }
+}

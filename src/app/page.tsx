@@ -1,8 +1,9 @@
 "use client"
 
 import Submarine from "@/components/Animations/Submarine";
-import TreasureBox from "@/components/Animations/TreasureChest";
+import TestScss from "@/components/Animations/TestScss";
 import Typewriter from "@/components/Animations/Typewriter";
+import Button from "@/components/Animations/Button";
 
 export default function Home() {
   return (
@@ -14,9 +15,12 @@ export default function Home() {
         </p>
         <button className='btn mt-8'>Let's Begin</button>
       </div>
+      <Button label="Click MyRipple" isRipple />
+
       {/* <Typewriter /> */}
-      <TreasureBox />
-      <Submarine />
+      <TestScss />
+      {/* <Submarine /> */}
+
     </main>
   );
 }
